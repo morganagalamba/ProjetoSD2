@@ -1,0 +1,14 @@
+
+State Machine - |projeto2|iniciou
+Name iniciou.1011 iniciou.1010 iniciou.1001 iniciou.1000 iniciou.0111 iniciou.0110 iniciou.0101 iniciou.0100 iniciou.0011 iniciou.0010 iniciou.0001 
+iniciou.0001 0 0 0 0 0 0 0 0 0 0 0 
+iniciou.0010 0 0 0 0 0 0 0 0 0 1 1 
+iniciou.0011 0 0 0 0 0 0 0 0 1 0 1 
+iniciou.0100 0 0 0 0 0 0 0 1 0 0 1 
+iniciou.0101 0 0 0 0 0 0 1 0 0 0 1 
+iniciou.0110 0 0 0 0 0 1 0 0 0 0 1 
+iniciou.0111 0 0 0 0 1 0 0 0 0 0 1 
+iniciou.1000 0 0 0 1 0 0 0 0 0 0 1 
+iniciou.1001 0 0 1 0 0 0 0 0 0 0 1 
+iniciou.1010 0 1 0 0 0 0 0 0 0 0 1 
+iniciou.1011 1 0 0 0 0 0 0 0 0 0 1 

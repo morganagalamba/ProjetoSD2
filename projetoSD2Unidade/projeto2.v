@@ -1,0 +1,479 @@
+module projeto2(data,A,CLK,B,RS,RW,EN,Soma,Multi,igual,Sub,result_sinal, sinalA, sinalB,led);
+
+input Soma,Sub,Multi,igual,CLK,sinalA,sinalB;
+input [7:0] A,B;
+output reg RS,RW,EN, result_sinal,led; //result_end = sinal(caracter) do resultado final
+integer contador=0,cont=0,cont2=0,contNum=0;
+reg [3:0]iniciou;
+output reg [7:0] data;
+reg [7:0] centenaA,dezenaA,unidadeA;
+reg [7:0] resultDezenamilhar,resultUnidademilhar,resultCentena,resultDezena,resultUnidade;
+reg[15:0] result;
+
+	always @(posedge CLK) begin
+		contador=contador+1;
+		if(contador==2250000)begin
+			contador=0;
+			iniciou<=4'b0001;
+		end
+		case(iniciou) 
+				1: begin 
+						contador=0;
+						RS=0;
+						RW=0;
+						EN=1;
+						data<=8'b00111000;
+						cont2=cont2+1;
+						if(cont2==125000)begin
+							iniciou <= 4'b0010;
+							cont2=0;
+						end
+						else begin
+							iniciou<=4'b0001;
+						end
+				end
+				2:begin
+					contador=0;
+					cont2=cont2+1;
+					EN=0;
+					if(cont2==250000)begin
+						
+						cont=cont+1;
+						cont2=0;
+						if(cont==4)begin
+							iniciou<=4'b0011;
+						end
+						else begin
+							iniciou<=4'b0001;
+						end
+						
+					end
+					else begin 
+						iniciou<=4'b0010;
+					end
+				end
+				3:begin
+					contador=0;
+					RS=0;
+					RW=0;
+					EN=1;
+					data<=8'b00001111;
+					cont2=cont2+1;
+					if(cont2==125000)begin
+						cont2=0;
+						iniciou<=4'b0100;
+					end
+					else begin
+						iniciou<=4'b0011;
+					end
+					
+				end
+				4:begin
+					contador=0;
+					cont2=cont2+1;
+					EN=0;
+					if(cont2==250000)begin
+						cont2=0;
+						iniciou<=4'b0101;
+					end
+					else begin
+						iniciou<=4'b0100;
+					end
+				end
+				5:begin
+					
+					contador=0;
+					if(cont2==125000)begin
+						cont2=0;
+						iniciou<=4'b0110;
+					end
+					else begin
+						RS=0;
+						RW=0;
+						EN=1;
+						data<=8'b00000001;
+					end
+					cont2=cont2+1;
+				end
+				6:begin
+					contador=0;
+					EN=0;
+					cont2=cont2+1;
+					if(cont2==250000)begin
+						cont2=0;
+						iniciou<=4'b0111;
+					end
+					else begin
+						iniciou<=4'b110;
+					end
+				end
+				7:begin
+					contador=0;
+					RS=0;
+					RW=0;
+					EN=1;
+					data<=8'b00000110;
+					cont2=cont2+1;
+					if(cont2==125000)begin
+						cont2=0;
+						iniciou<=4'b1000;
+					end
+					else begin
+						iniciou<=4'b0111;
+					end
+				end
+				8:begin
+					contador=0;
+					EN=0;
+					cont2=cont2+1;
+					if(cont2==250000)begin
+						cont2=0;
+						iniciou<=4'b1011;
+					end
+					else begin
+						iniciou<=4'b1000;
+					end
+				end
+				9:begin
+					contador=0;
+					RS=1;
+					RW=0;
+					EN=1;
+					if(cont2==125000)begin
+						cont2=0;
+						iniciou<=4'b1010;
+					end
+					cont2 = cont2+1;
+				end
+				10:begin 
+					contador=0;
+					EN=0;
+					cont2=cont2+1;
+					if(cont2==250000)begin
+						cont2=0;
+                        iniciou<=4'b1011;
+					end
+					else begin
+						iniciou<=4'b1010;
+					end
+				end
+                11:begin //Escrever A e B e op;
+					contador=0;
+                    RS=1;
+                    RW=0;
+                    EN=1;
+                    led=1;
+                     if(contNum==0)begin
+                        if(sinalA==1)begin
+                            data<=8'b00101101;
+                        end
+                        else begin
+                            data<=8'b00100000;
+                        end
+                        
+                        if(cont2==125000)begin
+						cont2=0;
+						contNum=contNum+1;
+						iniciou<=4'b1010;
+						end
+						cont2=cont2+1;
+                    end
+                    else if(contNum==1)begin
+                        centenaA<=(A/100);
+                        data<=centenaA+8'b00110000;
+                        if(cont2==125000)begin
+						cont2=0;
+						contNum=contNum+1;
+						iniciou<=4'b1010;
+						end
+						cont2=cont2+1;
+                    end
+                    else if(contNum==2)begin
+                        dezenaA<=((A%100)/10);
+                        data<=dezenaA+8'b00110000;
+                        if(cont2==125000)begin
+						cont2=0;
+						contNum=contNum+1;
+						iniciou<=4'b1010;
+						end
+						cont2=cont2+1;
+                    end
+                    else  if(contNum==3)begin
+                        unidadeA<=((A%100)%10);
+                        data<=unidadeA+8'b00110000;
+                        if(cont2==125000)begin
+						cont2=0;
+						contNum=contNum+1;
+						iniciou<=4'b1010;
+						end
+						cont2=cont2+1;
+                    end
+                    else  if(contNum==4)begin
+                        data<=8'b00100000;
+                        if(cont2==125000)begin
+						cont2=0;
+						contNum=contNum+1;
+						iniciou<=4'b1010;
+						end
+						cont2=cont2+1;
+                    end
+                    else  if(contNum==5)begin
+                        data<=8'b00100000;
+                        if(cont2==125000)begin
+						cont2=0;
+						contNum=contNum+1;
+						iniciou<=4'b1010;
+						end
+						cont2=cont2+1;
+                    end
+                    else  if(contNum==6)begin
+                        data<=8'b00100000;
+                        if(cont2==125000)begin
+						cont2=0;
+						contNum=contNum+1;
+						iniciou<=4'b1010;
+						end
+						cont2=cont2+1;
+                    end
+                    else  if(contNum==7)begin
+                        data<=8'b00101011;
+                        if(cont2==125000)begin
+						cont2=0;
+						contNum=contNum+1;
+						iniciou<=4'b1010;
+						end
+						cont2=cont2+1;
+                    end
+                    else  if(contNum==8)begin
+                        data<=8'b00100000;
+                        if(cont2==125000)begin
+						cont2=0;
+						contNum=contNum+1;
+						iniciou<=4'b1010;
+						end
+						cont2=cont2+1;
+                    end
+                    else  if(contNum==9)begin
+                        data<=8'b00100000;
+                        if(cont2==125000)begin
+						cont2=0;
+						contNum=contNum+1;
+						iniciou<=4'b1010;
+						end
+						cont2=cont2+1;
+                    end
+                    else  if(contNum==10)begin
+                        data<=8'b00100000;
+                        if(cont2==125000)begin
+						cont2=0;
+						contNum=contNum+1;
+						iniciou<=4'b1010;
+						end
+						cont2=cont2+1;
+                    end
+                     if(contador==11)begin
+                        if(sinalB==1)begin
+                            data<=8'b00101101;
+                        end
+                        else begin
+                            data<=8'b00100000;
+                        end
+                        if(cont2==125000)begin
+						cont2=0;
+						contNum=contNum+1;
+						iniciou<=4'b1010;
+						end
+						cont2=cont2+1;
+                    end
+                    else if(contNum==12)begin
+                        centenaA<=(B/100);
+                        data<=centenaA+8'b00110000;
+                        if(cont2==125000)begin
+						cont2=0;
+						contNum=contNum+1;
+						iniciou<=4'b1010;
+						end
+						cont2=cont2+1;
+                    end
+                    else if(contNum==13)begin
+                        dezenaA<=((B%100)/10);
+                        data<=dezenaA+8'b00110000;
+                        if(cont2==125000)begin
+						cont2=0;
+						contNum=contNum+1;
+						iniciou<=4'b1010;
+						end
+						cont2=cont2+1;
+                    end
+                    else  if(contNum==14)begin
+                        unidadeA<=((B%100)%10);
+                        data<=unidadeA+8'b00110000;
+                        if(cont2==125000)begin
+						cont2=0;
+						contNum=contNum+1;
+						iniciou<=4'b1010;
+						end
+						cont2=cont2+1;
+                    end
+                    
+                    /*
+                         if(Soma==0)begin //soma pronto, lembrar de printar
+                       
+                    
+						end
+                        if(sinalA == 1 && sinalB == 1)begin // - -
+                            result <= A + B;
+                            result_sinal = 1;
+                            
+                        end
+
+
+                        else if(sinalA == 1 && sinalB == 0)begin // - + 
+                            if(A>B)begin
+                              result <= A-B;
+                              result_sinal = 1;
+                            end
+
+                            if(B>A)begin
+                                result <= B-A;
+                                result_sinal = 0; 
+                            end
+
+                            if(A==B)begin
+                                result <= A-B;
+                                result_sinal = 0;
+                            end
+                            
+                        end
+
+
+                        else if(sinalA == 0 && sinalB == 1)begin // + -
+                            if(A>B)begin
+                              result <= A-B;
+                              result_sinal = 0;
+                            end
+
+                            if(B>A)begin
+                                result <= B-A;
+                                result_sinal = 1; 
+                            end
+
+                            if(A==B)begin
+                                result <= A-B;
+                                result_sinal = 0;
+                            end
+                        end
+                        
+
+                       else  if(sinalA == 0  && sinalB == 0)begin // + +
+                            result <= A + B;
+                            result_sinal = 0;
+
+                        end
+                    end
+                    if(Sub==0)begin
+
+                        if(sinalA == 1 && sinalB == 1)begin // - -
+                            if(A>B)begin
+                              result <= A-B;
+                              result_sinal = 1;
+                            end
+
+                            if(B>A)begin
+                                result <= B-A;
+                                result_sinal = 0; 
+                            end
+
+                            if(A==B)begin
+                                result <= A-B;
+                                result_sinal = 0;
+                            end
+                            
+                        end
+
+
+                        if(sinalA == 1 && sinalB == 0)begin // - + 
+                            if(A>B)begin
+                              result <= A+B;
+                              result_sinal = 1;
+                            end
+
+                            if(B>A)begin
+                                result <= A+B;
+                                result_sinal = 1; 
+                            end
+
+                            if(A==B)begin
+                                result <= A+B;
+                                result_sinal = 1;
+                            end
+                            
+                            
+                        end
+
+
+                        if(sinalA == 0 && sinalB == 1)begin // + -
+                            if(A>B)begin
+                              result <= A+B;
+                              result_sinal = 0;
+                            end
+
+                            if(B>A)begin
+                                result <= A+B;
+                                result_sinal = 0; 
+                            end
+
+                            if(A==B)begin
+                                result <= A+B;
+                                result_sinal = 0;
+                            end
+                            
+                        end
+                        
+
+                        if(sinalA == 0  && sinalB == 0)begin // + +
+                             if(A>B)begin
+                              result <= A-B;
+                              result_sinal = 0;
+                            end
+
+                            if(B>A)begin
+                                result <= B-A;
+                                result_sinal = 1; 
+                            end
+
+                            if(A==B)begin
+                                result <= A-B;
+                                result_sinal = 0;
+                            end
+                            
+                            
+                        end
+                    end
+                    if(Multi==0)begin
+                        if(sinalA == sinalB)begin
+                          result <= A * B;
+                          result_sinal = 0;
+                        end
+                        if(sinalA != sinalB)begin
+                            result <= A * B;
+                            result_sinal = 1;  
+                        end
+                        
+                    end
+                    if(igual == 0)begin// printar result_sinal ao lado de result
+
+                        //printar
+                               //sinal positivo ser espa?o e negativo ser '-'
+                               
+								
+
+                            end*/
+                end
+
+
+			endcase	
+	end
+	
+
+endmodule 
